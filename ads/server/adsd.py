@@ -1,20 +1,23 @@
 
-import json
-import sys
 import os
+import sys
 
 from flask import Flask
+from flask import request
 from flask import render_template_string
-
+from flask import jsonify
 
 import ads
+from ads.api import detect_anomalies
 
 #----------------------------------------------------------------------#
 #                                                                      #
 #----------------------------------------------------------------------#
 
+# command line parameters  by uWSGI
 ARGS = sys.argv
 
+# Environment by uWSGI
 GLOBAL_CONTEXT = {
     'VERSION': ads.__version__,
     'APP_ARGS': ARGS,
@@ -29,7 +32,6 @@ GLOBAL_CONTEXT = {
 #----------------------------------------------------------------------#
 #                                                                      #
 #----------------------------------------------------------------------#
-
 
 app = Flask(__name__)
 
@@ -47,8 +49,6 @@ def index():
 
     return html
 
-#----------------------------------------------------------------------#
-#                                                                      #
 #----------------------------------------------------------------------#
 
 @app.route('/debug')
@@ -80,15 +80,29 @@ CONFIG_DATA_DIR       = {{ CONFIG_DATA_DIR }}
     return  html
 
 #----------------------------------------------------------------------#
-#                                                                      #
-#----------------------------------------------------------------------#
 
 @app.route('/status')
 def status():
 
     response = { 'status': 'running' }
 
-    response = json.dumps(response)
+    return jsonify(response)
 
-    return response
+#----------------------------------------------------------------------#
 
+@app.route('/detect', methods=['POST'])
+def detect():
+
+    if request.method != 'POST':
+        return 'NO POST'
+        
+    request_obj = request.json
+    
+    serie_data = request_obj['serie']
+
+    anomalies = detect_anomalies(serie_data)
+
+    response = {
+        'anomalies': anomalies
+    }
+    return jsonify(response)
