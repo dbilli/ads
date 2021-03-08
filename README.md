@@ -8,14 +8,20 @@ The server is based on Flask/uWSGI.
 
 ## Install
 
-   git clone https://github.com/dbilli/ads.git
-   
-   cd ads
-   python setup.py build
-   python setup.py install
+    git clone https://github.com/dbilli/ads.git
+    
+    cd ads
+    python setup.py build
+    python setup.py install
 
 
 ## Run server
+
+Launch:
+
+    adsd-daemon
+
+With params:
 
     adsd-daemon --listen 127.0.0.1:5555 --datadir /tmp
 
