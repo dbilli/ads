@@ -25,6 +25,10 @@ With params:
 
     adsd-daemon --listen 127.0.0.1:5555 --datadir /tmp
 
+## Test Server
+
+    python -m ads.server.test_client  nyc_taxi.csv
+
 ### REST API
 
 TODO
