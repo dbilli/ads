@@ -1,6 +1,7 @@
 
 import os
 import sys
+import traceback
 
 from flask import Flask
 from flask import request
@@ -8,7 +9,7 @@ from flask import render_template_string
 from flask import jsonify
 
 import ads
-from ads.api import detect_anomalies
+from ads.api import execute_pipeline
 
 #----------------------------------------------------------------------#
 #                                                                      #
@@ -19,13 +20,13 @@ ARGS = sys.argv
 
 # Environment by uWSGI
 GLOBAL_CONTEXT = {
-    'VERSION': ads.__version__,
-    'APP_ARGS': ARGS,
+    'VERSION'              : ads.__version__,
+    'APP_ARGS'             : ARGS,
     
     'CONFIG_LISTEN_ADDRESS': os.environ['CONFIG_LISTEN_ADDRESS'],
     'CONFIG_DATA_DIR'      : os.environ['CONFIG_DATA_DIR'],
     
-    'ENVIRON' : os.environ, #[ (k,v) for k,v in os.environ ] ,
+    'ENVIRON'              : os.environ, #[ (k,v) for k,v in os.environ ] ,
 }
 
 
@@ -90,19 +91,50 @@ def status():
 
 #----------------------------------------------------------------------#
 
-@app.route('/detect', methods=['POST'])
-def detect():
+#@app.route('/detect', methods=['POST'])
+#def detect():
+#
+#    if request.method != 'POST':
+#        return 'NO POST'
+#        
+#    request_obj = request.json
+#    
+#    serie_data = request_obj['serie']
+#
+#    anomalies = detect_anomalies(serie_data)
+#
+#    response = {
+#        'anomalies': anomalies
+#    }
+#    return jsonify(response)
+
+#----------------------------------------------------------------------#
+
+import traceback
+
+@app.route('/exec_pipeline', methods=['POST'])
+def exec_pipeline():
+    try:
+        return _exec_pipeline()
+    except Exception as e:
+        print(__file__, traceback.format_exc(), file=sys.stderr)
+        raise e
+
+def _exec_pipeline():
 
     if request.method != 'POST':
         return 'NO POST'
-        
+    
     request_obj = request.json
     
     serie_data = request_obj['serie']
-
-    anomalies = detect_anomalies(serie_data)
+    steps      = request_obj['steps']
+    image_file = request_obj.get('image_file')
+    
+    steps_result = execute_pipeline(steps, serie_data, image_file=image_file)
 
     response = {
-        'anomalies': anomalies
+        'steps_results': steps_result
     }
+
     return jsonify(response)
