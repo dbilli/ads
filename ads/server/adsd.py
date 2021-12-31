@@ -112,13 +112,15 @@ def status():
 
 import traceback
 
+from werkzeug.exceptions import HTTPException
+
 @app.route('/exec_pipeline', methods=['POST'])
 def exec_pipeline():
     try:
         return _exec_pipeline()
     except Exception as e:
-        print(__file__, traceback.format_exc(), file=sys.stderr)
-        raise e
+        msg = "Generic error: %s" % (e)
+        return msg, 500
 
 def _exec_pipeline():
 
@@ -130,8 +132,9 @@ def _exec_pipeline():
     serie_data = request_obj['serie']
     steps      = request_obj['steps']
     image_file = request_obj.get('image_file')
-    
-    steps_result = execute_pipeline(steps, serie_data, image_file=image_file)
+    data_step = request_obj.get('data_step', 60)
+
+    steps_result = execute_pipeline(steps, serie_data, image_file=image_file, data_step=data_step)
 
     response = {
         'steps_results': steps_result

@@ -83,7 +83,7 @@ print(document)
 
 import sys
 import time
-
+import datetime
 import pandas as pd
 
 #import adtk.detector 
@@ -100,7 +100,7 @@ import matplotlib.pyplot as plt
 #                                                                      #
 #----------------------------------------------------------------------#
 
-def _mangle_serie_data(serie_data):
+def _mangle_serie_data(serie_data, step=60):
 
     index = []
     data  = []
@@ -108,7 +108,7 @@ def _mangle_serie_data(serie_data):
         index.append( pd.to_datetime(t, unit='s') )
         data.append(v)
     s_train = pd.Series(index=index, data=data)
-    s_train = s_train.resample("30 min")    
+    s_train = s_train.resample( pd.Timedelta(seconds=step) ) 
     s_train = s_train.pad()
     s_train = validate_series(s_train)
     return s_train
@@ -203,9 +203,9 @@ def create_image(image_file, pipeline_result):
     plt.savefig(image_file) 
         
         
-def execute_pipeline(steps, serie_data, image_file=None):
+def execute_pipeline(steps, serie_data, image_file=None, data_step=60):
 
-    s_train = _mangle_serie_data(serie_data)
+    s_train = _mangle_serie_data(serie_data, step=data_step)
 
     # EXECUTE
     pipeline = load_pipeline(steps)

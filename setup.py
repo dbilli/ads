@@ -15,7 +15,7 @@ setup(
     author_email='diegobilli@gmail.com',
 
     setup_requires='setuptools',
-
+    
     classifiers=[
         'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: Apache Software License',
@@ -31,8 +31,9 @@ setup(
     packages=find_packages(),
 
     install_requires=[
-        'adtk',
-        'Flask',
-        'uwsgi',
+        'adtk==0.6.2',
+        'Flask==1.1.2',
+        'numpy==1.20',
+        'uwsgi==2.0.19.1',
     ]
 )
