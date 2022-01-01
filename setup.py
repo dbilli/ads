@@ -4,11 +4,13 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
+import ads
+
 base_dir = os.path.dirname(__file__)
 
 setup(
     name='ads',
-    version='0.1',
+    version=ads.__version__,
     description='',
 
     author='Diego Billi',
