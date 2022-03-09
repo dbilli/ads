@@ -34,7 +34,7 @@ setup(
 
     install_requires=[
         'adtk==0.6.2',
-        'Flask==1.1.2',
+        'Flask==1.1.4',
         'numpy==1.20',
         'uwsgi==2.0.19.1',
     ]

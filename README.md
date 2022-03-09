@@ -19,19 +19,23 @@ The server is based on Flask/uWSGI.
 
 Launch:
 
-    adsd-daemon
+    ads-daemon
 
 With params:
 
-    adsd-daemon --listen 127.0.0.1:5555 --datadir /tmp
+    ads-daemon --listen 127.0.0.1:5555 --datadir /tmp
 
 ## Test Server
 
     python -m ads.server.test_client  nyc_taxi.csv
 
-### REST API
+## REST API
 
 TODO
+
+## News
+
+*  [Change log](./CHANGELOG.md)
 
 ## Authors
 
